@@ -1,5 +1,5 @@
 import { galleryItems } from './gallery-items.js';
- 
+
 const galleryList = document.querySelector('.gallery');
 let modalInstance = null;
 
@@ -36,13 +36,19 @@ galleryList.addEventListener('click', e => {
 const openModal = url => {
   const instance = basicLightbox.create(`
     <img src="${url}" width="800" height="600">
-`);
+  `, {
+    onShow: instance => {
+      console.log('onShow', instance);
+      document.addEventListener('keydown', onModalKeyDown);
+    },
+    onClose: instance => {
+      console.log('onClose', instance);
+      document.removeEventListener('keydown', onModalKeyDown);
+    }
+  });
 
   instance.show();
-    
   modalInstance = instance;
-
-  document.addEventListener('keydown', onModalKeyDown);
 };
 
 const closeModal = () => {
@@ -55,10 +61,9 @@ const closeModal = () => {
 };
 
 const onModalKeyDown = e => {
-  const ESC_KEY_CODE = 27;
-
-  if (e.keyCode === ESC_KEY_CODE && modalInstance) {
+  if (e.key === 'Escape' && modalInstance) {
     closeModal();
   }
 };
+
 
